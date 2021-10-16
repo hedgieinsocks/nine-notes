@@ -1,0 +1,18 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+ "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+ width="96.000000pt" height="96.000000pt" viewBox="0 0 96.000000 96.000000"
+ preserveAspectRatio="xMidYMid meet">
+<metadata>
+Nine Notes Logo
+</metadata>
+<g transform="translate(0.000000,96.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M0 480 l0 -480 348 0 347 0 133 133 132 132 0 348 0 347 -480 0 -480
+0 0 -480z m870 120 l0 -270 -120 0 -120 0 0 -120 0 -120 -270 0 -270 0 0 390
+0 390 390 0 390 0 0 -270z"/>
+<path d="M240 660 l0 -30 205 0 205 0 0 30 0 30 -205 0 -205 0 0 -30z"/>
+<path d="M238 503 l-4 -28 246 0 246 0 -4 28 -4 27 -238 0 -238 0 -4 -27z"/>
+</g>
+</svg>

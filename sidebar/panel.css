@@ -1,0 +1,71 @@
+html, body {
+  height: 100vh;
+  background: linear-gradient(to right, #d7d7db, white);
+}
+
+textarea {
+  height: 100vh;
+  width: 100%;
+  margin-top: -7px;
+  padding: 5px;
+  resize: none;
+  border: none;
+  outline: none;
+  float: left;
+  overflow: auto;
+  font-family: inherit;
+  font-size: inherit;
+  background-image: url('note.png');
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 150px 89px;
+  background-color: white;
+}
+
+.tabs [type=radio] {
+  display: none;
+}
+
+.tabs {
+  padding: 8px;
+  margin-top: -8px;
+  margin-left: -8px;
+  margin-bottom: -1px;
+  float: left;
+}
+
+label {
+  padding: 8px;
+  background: #d7d7db;
+  float: left;
+  width: 36px;
+  height: 36px;
+}
+
+label:hover {
+  box-shadow: inset 0 2px 0 #4a4a4f;
+  background: white;
+}
+
+input[type="radio"]:checked + label {
+  background: white;
+  box-shadow: inset 0 2px 0 #ff0039;
+}
+
+button {
+  background-color: #d7d7db;
+  border: none;
+  color: black;
+  padding: 8px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  transition-duration: 0.2s;
+  width: 64px;
+}
+
+button:hover {
+  background-color: #4a4a4f;
+  color: white;
+}
