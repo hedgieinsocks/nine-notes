@@ -23,21 +23,38 @@ browser.browserAction.onClicked.addListener(() => {
 	browser.sidebarAction.open();
 });
 
-browser.menus.onClicked.addListener((info) => {
-	browser.storage.local.get([info.menuItemId, "sendToTop"], items => {
-		let noteName = info.menuItemId
-		let oldNote = items[info.menuItemId]
 
-		if (oldNote) {
-			if (items.sendToTop) {
-				newNote = info.selectionText + "\n" + oldNote;
-			} else {
-				newNote = oldNote + "\n" + info.selectionText;
-			};
+browser.menus.onClicked.addListener((info) => {
+	browser.storage.local.get([info.menuItemId, "sendToTop", "appendUrl", "emptyLine"], items => {
+		let noteName = info.menuItemId;
+		let oldNote = items[info.menuItemId];
+		let newText = info.selectionText;
+		let newNote;
+
+		if (items.emptyLine) {
+			separator = "\n\n";
 		} else {
-			newNote = info.selectionText;
+			separator = "\n";
 		};
-		browser.storage.local.set({ [noteName]: newNote });
-		browser.runtime.sendMessage({ [noteName]: newNote });
+
+		browser.tabs.query({currentWindow: true, active: true}, tabs => {
+			let url = tabs[0].url;
+
+			if (items.appendUrl) {
+                newText = info.selectionText + " ( " + url + " )";
+			};
+
+			if (oldNote) {
+				if (items.sendToTop) {
+					newNote = newText + separator + oldNote;
+				} else {
+					newNote = oldNote + separator + newText;
+				};
+			} else {
+				newNote = newText;
+			};
+			browser.storage.local.set({ [noteName]: newNote });
+			browser.runtime.sendMessage({ [noteName]: newNote });
+		});
 	});
 });

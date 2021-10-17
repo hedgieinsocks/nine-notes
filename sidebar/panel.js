@@ -10,6 +10,8 @@ const defaults = {
     note9: "",
     softWrap: true,
     sendToTop: false,
+    appendUrl: false,
+    emptyLine: false,
     darkTheme: false,
     fontSize: "12",
     font: "",
@@ -135,7 +137,6 @@ for (let i = 1; i < 10; i++) {
     });
     document.getElementById(note).addEventListener("input", () => {
         browser.storage.local.set({ [note]: document.getElementById(note).value });
-        browser.runtime.sendMessage({ [note]: document.getElementById(note).value });
     });
 };
 
