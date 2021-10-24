@@ -1,28 +1,5 @@
+select,
 input {
-  margin: 0px;
-  vertical-align: middle;
-  margin-right: 5px;
-}
-
-select {
-  vertical-align: middle;
-}
-
-ol {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  margin: 5px;
-}
-
-#fontSize, #notesNum {
-  width: 60px;
-  margin-right: 5px;
-}
-
-#font {
-  width: 200px;
-  margin-right: 5px;
+    margin: 8px;
+    vertical-align: middle;
 }
