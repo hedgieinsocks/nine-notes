@@ -8,36 +8,31 @@
 </head>
 
 <body>
-    <div class="tabs">
-        <input id="tab1" type="radio" name="selection" checked>
-        <label class="title" id="note1Name" for="tab1">#1</label>
-        <input id="tab2" type="radio" name="selection">
-        <label class="title" id="note2Name" for="tab2" style="display: none">#2</label>
-        <input id="tab3" type="radio" name="selection">
-        <label class="title" id="note3Name" for="tab3" style="display: none">#3</label>
-        <input id="tab4" type="radio" name="selection">
-        <label class="title" id="note4Name" for="tab4" style="display: none">#4</label>
-        <input id="tab5" type="radio" name="selection">
-        <label class="title" id="note5Name" for="tab5" style="display: none">#5</label>
-        <input id="tab6" type="radio" name="selection">
-        <label class="title" id="note6Name" for="tab6" style="display: none">#6</label>
-        <input id="tab7" type="radio" name="selection">
-        <label class="title" id="note7Name" for="tab7" style="display: none">#7</label>
-        <input id="tab8" type="radio" name="selection">
-        <label class="title" id="note8Name" for="tab8" style="display: none">#8</label>
-        <input id="tab9" type="radio" name="selection">
-        <label class="title" id="note9Name" for="tab9" style="display: none">#9</label>
+    <div class="header">
+        <input class="tab" id="note1" type="radio" name="selection" checked>
+        <label class="title" id="name1" for="note1" name="1" title="Switch to Note 1">1</label>
+        <input class="tab" id="note2" type="radio" name="selection">
+        <label class="title" id="name2" for="note2" name="2" title="Switch to Note 2">2</label>
+        <input class="tab" id="note3" type="radio" name="selection">
+        <label class="title" id="name3" for="note3" name="3" title="Switch to Note 3">3</label>
+        <input class="tab" id="note4" type="radio" name="selection">
+        <label class="title" id="name4" for="note4" name="4" title="Switch to Note 4">4</label>
+        <input class="tab" id="note5" type="radio" name="selection">
+        <label class="title" id="name5" for="note5" name="5" title="Switch to Note 5">5</label>
+        <input class="tab" id="note6" type="radio" name="selection">
+        <label class="title" id="name6" for="note6" name="6" title="Switch to Note 6">6</label>
+        <input class="tab" id="note7" type="radio" name="selection">
+        <label class="title" id="name7" for="note7" name="7" title="Switch to Note 7">7</label>
+        <input class="tab" id="note8" type="radio" name="selection">
+        <label class="title" id="name8" for="note8" name="8" title="Switch to Note 8">8</label>
+        <input class="tab" id="note9" type="radio" name="selection">
+        <label class="title" id="name9" for="note9" name="9" title="Switch to Note 9">9</label>
+        <button id="copy-btn" title="Copy current note to clipboard">📋</button>
+        <button id="save-btn" title="Export current note to file">💾</button>
+        <button id="erase-btn" title="Erase current note">🧹</button>
+
     </div>
-    <textarea class="notes" id="note1" style="display: block"></textarea>
-    <textarea class="notes" id="note2" style="display: none"></textarea>
-    <textarea class="notes" id="note3" style="display: none"></textarea>
-    <textarea class="notes" id="note4" style="display: none"></textarea>
-    <textarea class="notes" id="note5" style="display: none"></textarea>
-    <textarea class="notes" id="note6" style="display: none"></textarea>
-    <textarea class="notes" id="note7" style="display: none"></textarea>
-    <textarea class="notes" id="note8" style="display: none"></textarea>
-    <textarea class="notes" id="note9" style="display: none"></textarea>
-    <button id="btn">Save</button>
+    <textarea id="content" style="display: block"></textarea>
 </body>
 
 </html>

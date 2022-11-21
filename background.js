@@ -8,19 +8,25 @@ const defaults = {
     note7: "",
     note8: "",
     note9: "",
-    note1Name: "#1",
-    note2Name: "#2",
-    note3Name: "#3",
-    note4Name: "#4",
-    note5Name: "#5",
-    note6Name: "#6",
-    note7Name: "#7",
-    note8Name: "#8",
-    note9Name: "#9",
-    sendToTop: false,
+    name1: "1",
+    name2: "2",
+    name3: "3",
+    name4: "4",
+    name5: "5",
+    name6: "6",
+    name7: "7",
+    name8: "8",
+    name9: "9",
+    sendTop: false,
     appendUrl: false,
     emptyLine: false,
+    notesNum: 5
 }
+
+browser.browserAction.onClicked.addListener(() => {
+    browser.sidebarAction.open();
+});
+
 
 browser.menus.create({
     id: "main",
@@ -33,32 +39,28 @@ browser.menus.create({
     }
 });
 
-browser.storage.local.get(defaults, (options) => {
-    let menuNum = Number(options.notesNum) + 1;
+browser.storage.local.get(defaults, (items) => {
+    let menuNum = Number(items.notesNum) + 1;
     for (let i = 1; i < menuNum; i++) {
-        let name = "note" + i + "Name";
+        let name = "name" + i;
         browser.menus.create({
             parentId: "main",
             id: "note" + i,
-            title: options[name].toString(),
+            title: i + " | " + items[name],
             contexts: ["selection"],
             documentUrlPatterns: ['<all_urls>']
         });
     };
 });
 
-browser.browserAction.onClicked.addListener(() => {
-    browser.sidebarAction.open();
-});
-
-browser.menus.onClicked.addListener((info) => {
-    browser.storage.local.get(defaults, options => {
-        let noteName = info.menuItemId;
-        let oldNote = options[info.menuItemId];
-        let newText = info.selectionText;
+browser.menus.onClicked.addListener((data) => {
+    browser.storage.local.get(defaults, (items) => {
+        let noteName = data.menuItemId;
+        let oldNote = items[data.menuItemId];
+        let newText;
         let newNote;
 
-        if (options.emptyLine) {
+        if (items.emptyLine) {
             separator = "\n\n";
         } else {
             separator = "\n";
@@ -67,12 +69,14 @@ browser.menus.onClicked.addListener((info) => {
         browser.tabs.query({ currentWindow: true, active: true }, tabs => {
             let url = tabs[0].url;
 
-            if (options.appendUrl) {
-                newText = info.selectionText + " ( " + url + " )";
+            if (items.appendUrl) {
+                newText = data.selectionText + " ( " + url + " )";
+            } else {
+                newText = data.selectionText;
             };
 
             if (oldNote) {
-                if (options.sendToTop) {
+                if (items.sendTop) {
                     newNote = newText + separator + oldNote;
                 } else {
                     newNote = oldNote + separator + newText;
@@ -80,11 +84,12 @@ browser.menus.onClicked.addListener((info) => {
             } else {
                 newNote = newText;
             };
+
             browser.storage.local.set({
                 [noteName]: newNote
             });
             browser.runtime.sendMessage({
-                [noteName]: newNote
+                refresh: [noteName]
             });
         });
     });

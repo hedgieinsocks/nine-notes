@@ -1,5 +1,5 @@
 body {
-    background: linear-gradient(to right, #2a2a2e, #4a4a4f);
+    background: #2a2a2e;
     height: 100vh;
 }
 
@@ -8,7 +8,7 @@ textarea {
     outline: none;
     border: none;
     background-color: #38383d;
-    background-image: url('note_dark.png');
+    background-image: url('notes_dark.png');
     background-position: left bottom;
     background-repeat: no-repeat;
     background-size: 150px 90px;
@@ -21,8 +21,9 @@ textarea {
     font-size: inherit;
 }
 
-label {
+label, button {
     float: left;
+    border: none;
     background: #2a2a2e;
     padding: 8px;
     min-width: 36px;
@@ -31,38 +32,21 @@ label {
     font-size: 14px;
 }
 
-label:hover {
+label:hover, button:hover {
     box-shadow: inset 0 2px 0 #ff0039;
     background: #38383d;
 }
 
-input[type="radio"]:checked+label {
+input[type="radio"]:checked+label, button:active {
     box-shadow: inset 0 2px 0 white;
     background: #38383d;
 }
 
-button {
-    transition-duration: 0.2s;
-    border: none;
-    background-color: #2a2a2e;
-    padding: 4px;
-    height: 28px;
-    width: 64px;
-    text-align: center;
-    color: white;
-    font-size: 14px;
-}
-
-button:hover {
-    background-color: #d7d7db;
-    color: black;
-}
-
-.tabs [type=radio] {
+.header [type=radio] {
     display: none;
 }
 
-.tabs {
+.header {
     color: white;
 }
 

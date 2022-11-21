@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Nine Notes",
     "description": "Create notes in your sidebar and navigate among them in tab-like fashion.",
-    "version": "0.6.1",
+    "version": "0.7.0",
     "author": "Artyom Babiy",
     "icons": {
         "48": "icon.svg",
@@ -37,6 +37,7 @@
     "permissions": [
         "storage",
         "menus",
-        "tabs"
+        "tabs",
+        "clipboardWrite"
     ]
 }

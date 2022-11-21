@@ -8,120 +8,139 @@ const defaults = {
     note7: "",
     note8: "",
     note9: "",
-    note1Name: "#1",
-    note2Name: "#2",
-    note3Name: "#3",
-    note4Name: "#4",
-    note5Name: "#5",
-    note6Name: "#6",
-    note7Name: "#7",
-    note8Name: "#8",
-    note9Name: "#9",
+    name1: "1",
+    name2: "2",
+    name3: "3",
+    name4: "4",
+    name5: "5",
+    name6: "6",
+    name7: "7",
+    name8: "8",
+    name9: "9",
     softWrap: true,
-    sendToTop: false,
+    sendTop: false,
     appendUrl: false,
     emptyLine: false,
     darkTheme: false,
+    copyButton: false,
+    saveButton: false,
+    eraseButton: false,
     fontSize: "14",
     font: "",
     notesNum: 5
-}
-
-names = {
-    note1Name: "#1",
-    note2Name: "#2",
-    note3Name: "#3",
-    note4Name: "#4",
-    note5Name: "#5",
-    note6Name: "#6",
-    note7Name: "#7",
-    note8Name: "#8",
-    note9Name: "#9"
 }
 
 function roundTo(n, x) {
     return Math.ceil(x / n) * n;
 };
 
-function toTop(id) {
-    browser.storage.local.get("sendToTop", option => {
-        let textArea = document.getElementById(id);
-        if (option.sendToTop) {
+function toTop() {
+    let textArea = document.getElementById("content");
+    browser.storage.local.get("sendTop", (items) => {
+        if (items.sendTop) {
             textArea.scrollTop = 0;
         };
     });
 };
 
-function showNote(id) {
-    document.querySelectorAll(".notes").forEach(i => {
-        if (i.id != id) {
-            i.style.display = "none";
-        } else {
-            i.style.display = "block";
-            i.focus();
-            toTop(i.id);
-        };
+function showNote(arg) {
+    let textArea = document.getElementById("content")
+    document.getElementById(arg).checked = true;
+    browser.storage.local.get(arg, (items) => {
+        textArea.value = items[arg] || "";
     });
+    textArea.focus();
+    toTop();
+};
+
+function copyNote() {
+    noteContent = document.getElementById("content").value;
+    navigator.clipboard.writeText(noteContent).then();
 };
 
 function saveNote() {
-    document.querySelectorAll(".notes").forEach(i => {
-        if (i.style.display == "block") {
-            let d = new Date();
-            let month = d.getMonth() + 1
-            let filename = i.id + '_' + d.getFullYear() + '-' + month +
-                '-' + d.getDate() + '_' + d.getHours() + '-' + d.getMinutes() + ".txt"
-            let text = i.value
-            let element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-            element.setAttribute('download', filename);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-        };
+    let activeNote = document.querySelector(".tab:checked")
+    let d = new Date();
+    let month = d.getMonth() + 1
+    let filename = activeNote.id + "_" + d.getFullYear() + "-" + month +
+        "-" + d.getDate() + "_" + d.getHours() + "-" + d.getMinutes() + ".txt"
+    let text = document.getElementById("content").value
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+};
+
+function eraseNote() {
+    document.getElementById("content").value = "";
+    let objectName = document.querySelector(".tab:checked").id
+    browser.storage.local.set({
+        [objectName]: document.getElementById("content").value
     });
 };
 
-
-function changeFontSize(fontSize) {
-    document.querySelectorAll(".notes").forEach(i => {
-        i.style.fontSize = fontSize + "px";
-    });
-};
-
-function changeFont(font) {
-    document.querySelectorAll(".notes").forEach(i => {
-        i.style.fontFamily = font;
-    });
-};
-
-function changeNotesNum(notesNum) {
-    document.querySelectorAll(".title").forEach((i, n) => {
-        i.style.display = "block";
-    });
-    document.querySelectorAll(".title").forEach((i, n) => {
-        if (n >= notesNum) {
-            i.style.display = "none";
-        };
-    });
-    recreateSubMenus();
-};
-
-function changeSoftWrap(softWrap) {
-    if (softWrap) {
-        document.querySelectorAll(".notes").forEach(i => {
-            i.style.whiteSpace = "pre-wrap";
-        });
+function changeCopyButton(arg) {
+    let button = document.getElementById("copy-btn");
+    if (arg) {
+        button.style.display = "none";
     } else {
-        document.querySelectorAll(".notes").forEach(i => {
-            i.style.whiteSpace = "pre";
-        });
+        button.style.display = "block";
     };
 };
 
-function changeTheme(darkTheme) {
-    if (darkTheme) {
+function changeSaveButton(arg) {
+    let button = document.getElementById("save-btn");
+    if (arg) {
+        button.style.display = "none";
+    } else {
+        button.style.display = "block";
+    };
+};
+
+function changeEraseButton(arg) {
+    let button = document.getElementById("erase-btn");
+    if (arg) {
+        button.style.display = "none";
+    } else {
+        button.style.display = "block";
+    };
+};
+
+function changeFontSize(arg) {
+    document.getElementById("content").style.fontSize = arg + "px";
+};
+
+function changeFont(arg) {
+    document.getElementById("content").style.fontFamily = arg;
+};
+
+function changeNotesNum(arg) {
+    showNote("note1");
+    document.querySelectorAll(".title").forEach((i, n) => {
+        if (n < arg) {
+            i.style.display = "block";
+        } else {
+            i.style.display = "none";
+        };
+    });
+    resizeTabs();
+    recreateSubMenus();
+};
+
+function changeSoftWrap(arg) {
+    let textArea = document.getElementById("content");
+    if (arg) {
+        textArea.style.whiteSpace = "pre-wrap";
+    } else {
+        textArea.style.whiteSpace = "pre";
+    };
+};
+
+function changeTheme(arg) {
+    if (arg) {
         document.getElementById("theme").href = "sidebar_dark.css";
     } else {
         document.getElementById("theme").href = "sidebar.css";
@@ -137,15 +156,15 @@ function resizeTabs() {
 };
 
 function recreateSubMenus() {
-    browser.storage.local.get(defaults, (options) => {
-        let menuNum = Number(options.notesNum) + 1;
+    browser.storage.local.get(defaults, (items) => {
+        let menuNum = Number(items.notesNum) + 1;
         for (let i = 1; i < menuNum; i++) {
             browser.menus.remove("note" + i).then();
-            let name = "note" + i + "Name";
+            let name = "name" + i;
             browser.menus.create({
                 parentId: "main",
                 id: "note" + i,
-                title: options[name].toString(),
+                title: i + " | " + items[name],
                 contexts: ["selection"],
                 documentUrlPatterns: ['<all_urls>']
             });
@@ -157,52 +176,54 @@ function recreateSubMenus() {
     });
 };
 
-browser.storage.local.get(defaults, (options) => {
-    document.getElementById("note1Name").innerText = options.note1Name;
-    document.getElementById("note2Name").innerText = options.note2Name;
-    document.getElementById("note3Name").innerText = options.note3Name;
-    document.getElementById("note4Name").innerText = options.note4Name;
-    document.getElementById("note5Name").innerText = options.note5Name;
-    document.getElementById("note6Name").innerText = options.note6Name;
-    document.getElementById("note7Name").innerText = options.note7Name;
-    document.getElementById("note8Name").innerText = options.note8Name;
-    document.getElementById("note9Name").innerText = options.note9Name;
-    document.getElementById("note1").value = options.note1;
-    document.getElementById("note2").value = options.note2;
-    document.getElementById("note3").value = options.note3;
-    document.getElementById("note4").value = options.note4;
-    document.getElementById("note5").value = options.note5;
-    document.getElementById("note6").value = options.note6;
-    document.getElementById("note7").value = options.note7;
-    document.getElementById("note8").value = options.note8;
-    document.getElementById("note9").value = options.note9;
+browser.storage.local.get(defaults, (items) => {
+    document.getElementById("name1").innerText = items.name1;
+    document.getElementById("name2").innerText = items.name2;
+    document.getElementById("name3").innerText = items.name3;
+    document.getElementById("name4").innerText = items.name4;
+    document.getElementById("name5").innerText = items.name5;
+    document.getElementById("name6").innerText = items.name6;
+    document.getElementById("name7").innerText = items.name7;
+    document.getElementById("name8").innerText = items.name8;
+    document.getElementById("name9").innerText = items.name9;
 
-    changeNotesNum(options.notesNum);
-    resizeTabs();
-    changeTheme(options.darkTheme);
-    changeSoftWrap(options.softWrap);
-    changeFontSize(options.fontSize);
-    changeFont(options.font);
+    changeTheme(items.darkTheme);
+    changeNotesNum(items.notesNum);
+    changeCopyButton(items.copyButton)
+    changeSaveButton(items.saveButton)
+    changeEraseButton(items.eraseButton)
+    changeSoftWrap(items.softWrap);
+    changeFontSize(items.fontSize);
+    changeFont(items.font);
 });
 
 browser.browserAction.onClicked.addListener(() => {
     browser.sidebarAction.close();
 });
 
-document.getElementById("btn").addEventListener('click', function() {
+document.querySelectorAll(".tab").forEach((i) => {
+    document.getElementById(i.id).addEventListener('click', function() {
+        showNote(i.id);
+    });
+});
+
+document.getElementById("content").addEventListener("input", function() {
+    let objectName = document.querySelector(".tab:checked").id
+    browser.storage.local.set({
+        [objectName]: document.getElementById("content").value
+    });
+});
+
+document.getElementById("save-btn").addEventListener('click', function() {
     saveNote();
 });
 
-document.querySelectorAll(".notes").forEach((i, n) => {
-    let tab = "tab" + (n + 1);
-    document.getElementById(tab).addEventListener('click', function() {
-        showNote(i.id);
-    });
-    document.getElementById(i.id).addEventListener("input", function() {
-        browser.storage.local.set({
-            [i.id]: document.getElementById(i.id).value
-        });
-    });
+document.getElementById("erase-btn").addEventListener('click', function() {
+    eraseNote();
+});
+
+document.getElementById("copy-btn").addEventListener('click', function() {
+    copyNote();
 });
 
 document.querySelectorAll(".title").forEach(i => i.addEventListener("auxclick", event => {
@@ -223,57 +244,36 @@ document.querySelectorAll(".title").forEach(i => i.addEventListener("keydown", e
 
 document.querySelectorAll(".title").forEach(i => i.addEventListener("blur", event => {
     document.getElementById(event.target.id).contentEditable = false;
-    let newTitle = event.target.innerText || ":-("
+    let newTitle = event.target.innerText || event.target.getAttribute('name')
     document.getElementById(event.target.id).innerText = newTitle
     browser.storage.local.set({
-        [event.target.id]: newTitle
+        [event.target.id]: [newTitle]
     });
+    resizeTabs()
     recreateSubMenus();
-    document.getElementById(event.target.id).style.minWidth = "auto";
-    let width = document.getElementById(event.target.id).offsetWidth;
-    document.getElementById(event.target.id).style.minWidth = roundTo(36, width) + "px";
 }));
 
 browser.runtime.onMessage.addListener((message) => {
-    if (message.note1 != null) {
-        document.getElementById("note1").value = message.note1;
-        toTop("note1");
-    } else if (message.note2 != null) {
-        document.getElementById("note2").value = message.note2;
-        toTop("note2");
-    } else if (message.note3 != null) {
-        document.getElementById("note3").value = message.note3;
-        toTop("note3");
-    } else if (message.note4 != null) {
-        document.getElementById("note4").value = message.note4;
-        toTop("note4");
-    } else if (message.note5 != null) {
-        document.getElementById("note5").value = message.note5;
-        toTop("note5");
-    } else if (message.note6 != null) {
-        document.getElementById("note6").value = message.note6;
-        toTop("note6");
-    } else if (message.note7 != null) {
-        document.getElementById("note7").value = message.note7;
-        toTop("note7");
-    } else if (message.note8 != null) {
-        document.getElementById("note8").value = message.note8;
-        toTop("note8");
-    } else if (message.note9 != null) {
-        document.getElementById("note9").value = message.note9;
-        toTop("note9");
+    if (message.refresh) {
+        let activeNote = document.querySelector(".tab:checked").id
+        if (activeNote == message.refresh.toString()) {
+            showNote(activeNote);
+        };
     } else if (message.softWrap != null) {
         changeSoftWrap(message.softWrap);
     } else if (message.darkTheme != null) {
         changeTheme(message.darkTheme);
-    } else if (message.fontSize != null) {
+    } else if (message.copyButton != null) {
+        changeCopyButton(message.copyButton);
+    } else if (message.saveButton != null) {
+        changeSaveButton(message.saveButton);
+    } else if (message.eraseButton != null) {
+        changeEraseButton(message.eraseButton);
+    } else if (message.fontSize) {
         changeFontSize(message.fontSize);
-    } else if (message.font != null) {
+    } else if (message.font) {
         changeFont(message.font);
-    } else if (message.notesNum != null) {
-        document.getElementById("tab1").checked = true;
-        showNote("note1");
+    } else if (message.notesNum) {
         changeNotesNum(message.notesNum);
-        resizeTabs();
     };
 });
