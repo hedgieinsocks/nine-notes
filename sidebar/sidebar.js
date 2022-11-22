@@ -25,6 +25,7 @@ const defaults = {
     copyButton: false,
     saveButton: false,
     eraseButton: false,
+    lockButton: false,
     fontSize: "14",
     font: "",
     notesNum: 5
@@ -58,6 +59,17 @@ function copyNote() {
     navigator.clipboard.writeText(noteContent).then();
 };
 
+function lockNote() {
+    let lockStatus = document.getElementById("content").readOnly;
+    if (lockStatus) {
+        document.getElementById("content").readOnly = false;
+        document.getElementById("lock-btn").checked = false;
+    } else {
+        document.getElementById("content").readOnly = true;
+        document.getElementById("lock-btn").checked = true;
+    };
+};
+
 function saveNote() {
     let activeNote = document.querySelector(".tab:checked")
     let d = new Date();
@@ -75,6 +87,10 @@ function saveNote() {
 };
 
 function eraseNote() {
+    let lockStatus = document.getElementById("content").readOnly;
+    if (lockStatus) {
+        return;
+    };
     document.getElementById("content").value = "";
     let objectName = document.querySelector(".tab:checked").id
     browser.storage.local.set({
@@ -84,6 +100,15 @@ function eraseNote() {
 
 function changeCopyButton(arg) {
     let button = document.getElementById("copy-btn");
+    if (arg) {
+        button.style.display = "none";
+    } else {
+        button.style.display = "block";
+    };
+};
+
+function changeLockButton(arg) {
+    let button = document.getElementById("lock");
     if (arg) {
         button.style.display = "none";
     } else {
@@ -190,6 +215,7 @@ browser.storage.local.get(defaults, (items) => {
     changeTheme(items.darkTheme);
     changeNotesNum(items.notesNum);
     changeCopyButton(items.copyButton)
+    changeLockButton(items.lockButton)
     changeSaveButton(items.saveButton)
     changeEraseButton(items.eraseButton)
     changeSoftWrap(items.softWrap);
@@ -214,16 +240,20 @@ document.getElementById("content").addEventListener("input", function() {
     });
 });
 
+document.getElementById("copy-btn").addEventListener('click', function() {
+    copyNote();
+});
+
+document.getElementById("lock-btn").addEventListener('click', function() {
+    lockNote();
+});
+
 document.getElementById("save-btn").addEventListener('click', function() {
     saveNote();
 });
 
 document.getElementById("erase-btn").addEventListener('click', function() {
     eraseNote();
-});
-
-document.getElementById("copy-btn").addEventListener('click', function() {
-    copyNote();
 });
 
 document.querySelectorAll(".title").forEach(i => i.addEventListener("auxclick", event => {
@@ -265,6 +295,8 @@ browser.runtime.onMessage.addListener((message) => {
         changeTheme(message.darkTheme);
     } else if (message.copyButton != null) {
         changeCopyButton(message.copyButton);
+    } else if (message.lockButton != null) {
+        changeLockButton(message.lockButton);
     } else if (message.saveButton != null) {
         changeSaveButton(message.saveButton);
     } else if (message.eraseButton != null) {

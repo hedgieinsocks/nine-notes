@@ -7,6 +7,7 @@ const defaults = {
     copyButton: false,
     saveButton: false,
     eraseButton: false,
+    lockButton: false,
     fontSize: "14",
     font: "",
     notesNum: 5
@@ -21,6 +22,7 @@ browser.storage.local.get(defaults, (items) => {
     document.getElementById("copyButton").checked = items.copyButton;
     document.getElementById("saveButton").checked = items.saveButton;
     document.getElementById("eraseButton").checked = items.eraseButton;
+    document.getElementById("lockButton").checked = items.lockButton;
     document.getElementById("fontSize").value = items.fontSize;
     document.getElementById("font").value = items.font;
     document.getElementById("notesNum").value = items.notesNum;
@@ -86,6 +88,15 @@ document.getElementById("eraseButton").addEventListener("change", () => {
     });
     browser.runtime.sendMessage({
         eraseButton: document.getElementById("eraseButton").checked
+    });
+});
+
+document.getElementById("lockButton").addEventListener("change", () => {
+    browser.storage.local.set({
+        lockButton: document.getElementById("lockButton").checked
+    });
+    browser.runtime.sendMessage({
+        lockButton: document.getElementById("lockButton").checked
     });
 });
 
