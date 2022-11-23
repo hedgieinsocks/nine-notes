@@ -22,9 +22,6 @@
         <input type="checkbox" id="emptyLine">
         <label>Add Empty Line On Send Text</label>
         <br>
-        <input type="checkbox" id="darkTheme">
-        <label>Dark Theme</label>
-        <br>
         <input type="checkbox" id="copyButton">
         <label>Hide Copy butoon</label>
         <br>
@@ -33,6 +30,9 @@
         <br>
         <input type="checkbox" id="saveButton">
         <label>Hide Save button</label>
+        <br>
+        <input type="checkbox" id="viewButton">
+        <label>Hide View All button</label>
         <br>
         <input type="checkbox" id="eraseButton">
         <label>Hide Erase button</label>
@@ -183,6 +183,16 @@
           <option value="9">9</option>
         </select>
         <label>Notes</label>
+        <br>
+        <input type="checkbox" id="darkTheme">
+        <label>Dark Theme</label>
+        <i>(this switch resets the custom colors set below)</i>
+        <br>
+        <input class="browser-style" id="noteColor" type="text" placeholder="#d7d7db"/>
+        <label>Custom Note Background Color</label>
+        <br>
+        <input class="browser-style" id="noteTextColor" type="text" placeholder="orange"/>
+        <label>Custom Note Text Color</label>
     </div>
 </body>
 

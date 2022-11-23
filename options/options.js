@@ -8,9 +8,12 @@ const defaults = {
     saveButton: false,
     eraseButton: false,
     lockButton: false,
+    viewButton: false,
     fontSize: "14",
     font: "",
-    notesNum: 5
+    notesNum: 5,
+    noteColor: null,
+    noteTextColor: null
 }
 
 browser.storage.local.get(defaults, (items) => {
@@ -23,9 +26,12 @@ browser.storage.local.get(defaults, (items) => {
     document.getElementById("saveButton").checked = items.saveButton;
     document.getElementById("eraseButton").checked = items.eraseButton;
     document.getElementById("lockButton").checked = items.lockButton;
+    document.getElementById("viewButton").checked = items.viewButton;
     document.getElementById("fontSize").value = items.fontSize;
     document.getElementById("font").value = items.font;
     document.getElementById("notesNum").value = items.notesNum;
+    document.getElementById("noteColor").value = items.noteColor;
+    document.getElementById("noteTextColor").value = items.noteTextColor;
 });
 
 document.getElementById("softWrap").addEventListener("change", () => {
@@ -55,15 +61,6 @@ document.getElementById("emptyLine").addEventListener("change", () => {
     });
 });
 
-document.getElementById("darkTheme").addEventListener("change", () => {
-    browser.storage.local.set({
-        darkTheme: document.getElementById("darkTheme").checked
-    });
-    browser.runtime.sendMessage({
-        darkTheme: document.getElementById("darkTheme").checked
-    });
-});
-
 document.getElementById("copyButton").addEventListener("change", () => {
     browser.storage.local.set({
         copyButton: document.getElementById("copyButton").checked
@@ -79,6 +76,15 @@ document.getElementById("saveButton").addEventListener("change", () => {
     });
     browser.runtime.sendMessage({
         saveButton: document.getElementById("saveButton").checked
+    });
+});
+
+document.getElementById("viewButton").addEventListener("change", () => {
+    browser.storage.local.set({
+        viewButton: document.getElementById("viewButton").checked
+    });
+    browser.runtime.sendMessage({
+        viewButton: document.getElementById("viewButton").checked
     });
 });
 
@@ -125,4 +131,49 @@ document.getElementById("notesNum").addEventListener("change", () => {
     browser.runtime.sendMessage({
         notesNum: document.getElementById("notesNum").value
     });
+});
+
+document.getElementById("darkTheme").addEventListener("change", () => {
+    document.getElementById("noteColor").value = null;
+    document.getElementById("noteTextColor").value = null;
+    browser.storage.local.set({
+        darkTheme: document.getElementById("darkTheme").checked,
+        noteColor: null,
+        noteTextColor: null
+    });
+    browser.runtime.sendMessage({
+        darkTheme: document.getElementById("darkTheme").checked
+    });
+});
+
+document.getElementById("noteColor").addEventListener("change", () => {
+    let newColor = document.getElementById("noteColor").value;
+    browser.storage.local.set({
+        noteColor: [newColor]
+    });
+    if (newColor) {
+        browser.runtime.sendMessage({
+            noteColor: [newColor]
+        });
+    } else {
+        browser.runtime.sendMessage({
+            darkTheme: document.getElementById("darkTheme").checked
+        });
+    };
+});
+
+document.getElementById("noteTextColor").addEventListener("change", () => {
+    let newTextColor = document.getElementById("noteTextColor").value;
+    browser.storage.local.set({
+        noteTextColor: [newTextColor]
+    });
+    if (newTextColor) {
+        browser.runtime.sendMessage({
+            noteTextColor: [newTextColor]
+        });
+    } else {
+        browser.runtime.sendMessage({
+            darkTheme: document.getElementById("darkTheme").checked
+        });
+    };
 });

@@ -26,9 +26,12 @@ const defaults = {
     saveButton: false,
     eraseButton: false,
     lockButton: false,
+    viewButton: false,
     fontSize: "14",
     font: "",
-    notesNum: 5
+    notesNum: 5,
+    noteColor: null,
+    noteTextColor: null
 }
 
 function roundTo(n, x) {
@@ -70,6 +73,12 @@ function lockNote() {
     };
 };
 
+function viewNote() {
+    browser.tabs.create({
+        url: "/tab/tab.html"
+    });
+}
+
 function saveNote() {
     let activeNote = document.querySelector(".tab:checked")
     let d = new Date();
@@ -91,7 +100,7 @@ function eraseNote() {
     if (lockStatus) {
         return;
     };
-    document.getElementById("content").value = "";
+    document.getElementById("content").value = null;
     let objectName = document.querySelector(".tab:checked").id
     browser.storage.local.set({
         [objectName]: document.getElementById("content").value
@@ -118,6 +127,15 @@ function changeLockButton(arg) {
 
 function changeSaveButton(arg) {
     let button = document.getElementById("save-btn");
+    if (arg) {
+        button.style.display = "none";
+    } else {
+        button.style.display = "block";
+    };
+};
+
+function changeViewButton(arg) {
+    let button = document.getElementById("view-btn");
     if (arg) {
         button.style.display = "none";
     } else {
@@ -165,11 +183,21 @@ function changeSoftWrap(arg) {
 };
 
 function changeTheme(arg) {
+    document.getElementById("content").style.backgroundColor = null;
+    document.getElementById("content").style.color = null;
     if (arg) {
         document.getElementById("theme").href = "sidebar_dark.css";
     } else {
         document.getElementById("theme").href = "sidebar.css";
     };
+};
+
+function changeNoteColor(arg) {
+    document.getElementById("content").style.backgroundColor = arg;
+};
+
+function changeNoteTextColor(arg) {
+    document.getElementById("content").style.color = arg;
 };
 
 function resizeTabs() {
@@ -213,11 +241,18 @@ browser.storage.local.get(defaults, (items) => {
     document.getElementById("name9").innerText = items.name9;
 
     changeTheme(items.darkTheme);
+    if (items.noteColor) {
+        changeNoteColor(items.noteColor);
+    };
+    if (items.noteTextColor) {
+        changeNoteTextColor(items.noteTextColor);
+    };
     changeNotesNum(items.notesNum);
-    changeCopyButton(items.copyButton)
-    changeLockButton(items.lockButton)
-    changeSaveButton(items.saveButton)
-    changeEraseButton(items.eraseButton)
+    changeCopyButton(items.copyButton);
+    changeLockButton(items.lockButton);
+    changeSaveButton(items.saveButton);
+    changeViewButton(items.viewButton);
+    changeEraseButton(items.eraseButton);
     changeSoftWrap(items.softWrap);
     changeFontSize(items.fontSize);
     changeFont(items.font);
@@ -246,6 +281,10 @@ document.getElementById("copy-btn").addEventListener('click', function() {
 
 document.getElementById("lock-btn").addEventListener('click', function() {
     lockNote();
+});
+
+document.getElementById("view-btn").addEventListener('click', function() {
+    viewNote();
 });
 
 document.getElementById("save-btn").addEventListener('click', function() {
@@ -291,14 +330,14 @@ browser.runtime.onMessage.addListener((message) => {
         };
     } else if (message.softWrap != null) {
         changeSoftWrap(message.softWrap);
-    } else if (message.darkTheme != null) {
-        changeTheme(message.darkTheme);
     } else if (message.copyButton != null) {
         changeCopyButton(message.copyButton);
     } else if (message.lockButton != null) {
         changeLockButton(message.lockButton);
     } else if (message.saveButton != null) {
         changeSaveButton(message.saveButton);
+    } else if (message.viewButton != null) {
+        changeViewButton(message.viewButton);
     } else if (message.eraseButton != null) {
         changeEraseButton(message.eraseButton);
     } else if (message.fontSize) {
@@ -307,5 +346,11 @@ browser.runtime.onMessage.addListener((message) => {
         changeFont(message.font);
     } else if (message.notesNum) {
         changeNotesNum(message.notesNum);
+    } else if (message.darkTheme != null) {
+        changeTheme(message.darkTheme);
+    } else if (message.noteColor) {
+        changeNoteColor(message.noteColor);
+    } else if (message.noteTextColor) {
+        changeNoteTextColor(message.noteTextColor);
     };
 });
